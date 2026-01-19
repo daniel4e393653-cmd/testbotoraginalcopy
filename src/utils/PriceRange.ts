@@ -1,6 +1,5 @@
 import { ClmmTickMath, Percent } from "@flowx-finance/sdk";
 import BN from "bn.js";
-import invariant from "tiny-invariant";
 
 export class PriceRange {
   priceLower: BN;
@@ -9,6 +8,7 @@ export class PriceRange {
   bPriceUpper: BN;
   tPriceLower: BN;
   tPriceUpper: BN;
+  valid: boolean;
 
   constructor(
     tickLower: number,
@@ -16,24 +16,43 @@ export class PriceRange {
     bPricePercent: Percent,
     tPricePercent: Percent
   ) {
+    this.valid = true;
+
     this.priceLower = ClmmTickMath.tickIndexToSqrtPriceX64(tickLower);
     this.priceUpper = ClmmTickMath.tickIndexToSqrtPriceX64(tickUpper);
+
+    // Safety: wrong tick order
+    if (this.priceUpper.lte(this.priceLower)) {
+      const tmp = this.priceLower;
+      this.priceLower = this.priceUpper;
+      this.priceUpper = tmp;
+    }
+
     const priceDiff = this.priceUpper.sub(this.priceLower);
 
+    // ---- Base range ----
     const bPriceDiff = bPricePercent.multiply(priceDiff).quotient;
     this.bPriceLower = this.priceLower.add(bPriceDiff);
-    invariant(this.bPriceLower.lt(this.priceUpper), "invalid bPriceLower");
     this.bPriceUpper = this.priceUpper.sub(bPriceDiff);
-    invariant(this.bPriceUpper.gt(this.bPriceLower), "invalid bPriceUpper");
 
+    if (this.bPriceUpper.lte(this.bPriceLower)) {
+      this.valid = false;
+      return;
+    }
+
+    // ---- Target range ----
     const tPriceDiff = tPricePercent.multiply(priceDiff).quotient;
     this.tPriceLower = this.priceLower.add(tPriceDiff);
-    invariant(this.tPriceLower.lt(this.bPriceUpper), "invalid tPriceLower");
     this.tPriceUpper = this.priceUpper.sub(tPriceDiff);
-    invariant(
-      this.tPriceUpper.gt(this.tPriceLower) &&
-        this.tPriceUpper.lt(this.bPriceUpper),
-      "invalid tPriceUpper"
-    );
+
+    if (this.tPriceUpper.lte(this.tPriceLower)) {
+      this.valid = false;
+      return;
+    }
+
+    if (this.tPriceUpper.gte(this.bPriceUpper)) {
+      this.valid = false;
+      return;
+    }
   }
 }
