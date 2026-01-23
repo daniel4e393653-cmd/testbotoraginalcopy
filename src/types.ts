@@ -64,6 +64,40 @@ export type FlowXV3PositionRawData = {
   reward_infos: MoveObject<PositionRewardInfo>[];
 };
 
+export type CetusPoolRawData = {
+  id: ID;
+  coin_type_a: MoveObject<MoveTypeName>;
+  coin_type_b: MoveObject<MoveTypeName>;
+  liquidity: string;
+  coin_a: string;
+  coin_b: string;
+  current_sqrt_price: string;
+  current_tick_index: MoveObject<MoveInteger>;
+  tick_spacing: number;
+  fee_growth_global_a: string;
+  fee_growth_global_b: string;
+  fee_rate: string;
+  reward_infos: MoveObject<RewardInfo>[];
+};
+
+export type CetusPositionRawData = {
+  id: ID;
+  liquidity: string;
+  pool: string;
+  tick_lower_index: MoveObject<MoveInteger>;
+  tick_upper_index: MoveObject<MoveInteger>;
+  fee_growth_inside_a: string;
+  fee_owed_a: string;
+  fee_growth_inside_b: string;
+  fee_owed_b: string;
+  reward_amount_owed_0: string;
+  reward_amount_owed_1: string;
+  reward_amount_owed_2: string;
+  reward_growth_inside_0: string;
+  reward_growth_inside_1: string;
+  reward_growth_inside_2: string;
+};
+
 export type PriceFeedResponse = {
   id: string;
   attributes: Attributes;

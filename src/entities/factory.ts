@@ -3,9 +3,11 @@ import { ClmmProtocol } from "../constants";
 
 import {
   FlowXV3PositionProvider,
+  CetusPositionProvider,
   IPositionProvider,
   PositionManager,
   FlowXV3PositionManager,
+  CetusPositionManager,
 } from "./position";
 
 export const createPositionProvider = (
@@ -14,6 +16,10 @@ export const createPositionProvider = (
   switch (protocol) {
     case Protocol.FLOWX_V3:
       return new FlowXV3PositionProvider();
+    case Protocol.CETUS:
+      return new CetusPositionProvider();
+    default:
+      throw new Error(`Unsupported protocol: ${protocol}`);
   }
 };
 
@@ -23,6 +29,10 @@ export const createPositionManager = (
   switch (protocol) {
     case Protocol.FLOWX_V3:
       return new FlowXV3PositionManager();
+    case Protocol.CETUS:
+      return new CetusPositionManager();
+    default:
+      throw new Error(`Unsupported protocol: ${protocol}`);
   }
 };
 
