@@ -83,7 +83,11 @@ export class CetusPositionProvider implements IPositionProvider {
   }
 
   private async _fromObjectData(object: SuiObjectData) {
-    const rawData = object.content["fields"] as CetusPositionRawData;
+    invariant(
+      object.content && object.content.dataType === "moveObject",
+      "object content must be a move object"
+    );
+    const rawData = object.content.fields as unknown as CetusPositionRawData;
 
     const pool = await new CetusPoolProvider().getPoolById(rawData.pool);
 
