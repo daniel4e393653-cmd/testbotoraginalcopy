@@ -96,18 +96,24 @@ export class CetusPositionProvider implements IPositionProvider {
       liquidity: rawData.liquidity,
       owner: object.owner["AddressOwner"] ?? "",
       pool,
-      tickLower: Number(
-        BigInt.asIntN(
-          TICK_INDEX_BITS,
-          BigInt(rawData.tick_lower_index?.fields?.bits ?? 0)
-        )
-      ),
-      tickUpper: Number(
-        BigInt.asIntN(
-          TICK_INDEX_BITS,
-          BigInt(rawData.tick_upper_index?.fields?.bits ?? 0)
-        )
-      ),
+      tickLower: (() => {
+        if (rawData.tick_lower_index?.fields?.bits !== undefined) {
+          return Number(BigInt.asIntN(TICK_INDEX_BITS, BigInt(rawData.tick_lower_index.fields.bits)));
+        }
+        if (typeof rawData.tick_lower_index === 'number' || typeof rawData.tick_lower_index === 'string') {
+          return Number(BigInt.asIntN(TICK_INDEX_BITS, BigInt(rawData.tick_lower_index)));
+        }
+        invariant(false, `Invalid tick_lower_index structure for position ${object.objectId}`);
+      })(),
+      tickUpper: (() => {
+        if (rawData.tick_upper_index?.fields?.bits !== undefined) {
+          return Number(BigInt.asIntN(TICK_INDEX_BITS, BigInt(rawData.tick_upper_index.fields.bits)));
+        }
+        if (typeof rawData.tick_upper_index === 'number' || typeof rawData.tick_upper_index === 'string') {
+          return Number(BigInt.asIntN(TICK_INDEX_BITS, BigInt(rawData.tick_upper_index)));
+        }
+        invariant(false, `Invalid tick_upper_index structure for position ${object.objectId}`);
+      })(),
       feeGrowthInsideXLast: rawData.fee_growth_inside_a,
       feeGrowthInsideYLast: rawData.fee_growth_inside_b,
       coinsOwedX: rawData.fee_owed_a,
