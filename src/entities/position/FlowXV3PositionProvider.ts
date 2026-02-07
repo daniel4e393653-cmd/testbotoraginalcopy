@@ -11,6 +11,7 @@ import { FlowXV3PositionRawData } from "../../types";
 import { getLogger } from "../../utils/Logger";
 import { IPositionProvider } from "./IPositionProvider";
 import { Position } from "./Position";
+import { alignTickToSpacing } from "../../utils/cetusHelper";
 
 const logger = getLogger(module);
 
@@ -91,23 +92,31 @@ export class FlowXV3PositionProvider implements IPositionProvider {
 
     const pool = await new FlowXV3PoolProvider().getPoolById(rawData.pool_id);
 
+    // Extract raw tick values
+    const tickLowerRaw = Number(
+      BigInt.asIntN(
+        TICK_INDEX_BITS,
+        BigInt(rawData.tick_lower_index.fields.bits)
+      )
+    );
+    const tickUpperRaw = Number(
+      BigInt.asIntN(
+        TICK_INDEX_BITS,
+        BigInt(rawData.tick_upper_index.fields.bits)
+      )
+    );
+
+    // Align ticks to pool's tick spacing to ensure they're valid
+    const tickLower = alignTickToSpacing(tickLowerRaw, pool.tickSpacing);
+    const tickUpper = alignTickToSpacing(tickUpperRaw, pool.tickSpacing);
+
     const position = new Position({
       objectId: object.objectId,
       liquidity: rawData.liquidity,
       owner: object.owner["AddressOwner"] ?? "",
       pool,
-      tickLower: Number(
-        BigInt.asIntN(
-          TICK_INDEX_BITS,
-          BigInt(rawData.tick_lower_index.fields.bits)
-        )
-      ),
-      tickUpper: Number(
-        BigInt.asIntN(
-          TICK_INDEX_BITS,
-          BigInt(rawData.tick_upper_index.fields.bits)
-        )
-      ),
+      tickLower,
+      tickUpper,
       feeGrowthInsideXLast: rawData.fee_growth_inside_x_last,
       feeGrowthInsideYLast: rawData.fee_growth_inside_y_last,
       coinsOwedX: rawData.coins_owed_x,
