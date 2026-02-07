@@ -148,9 +148,9 @@ export class PositionManager {
       }
       const trade = tradeBuilder.build();
       const swapped = (await trade.swap({
-        tx,
+        tx: tx as any,
         coinIn: rewardCoin.object,
-        client: jsonRpcProvider,
+        client: jsonRpcProvider as any,
       })) as TransactionResult;
       tx.mergeCoins(targetCoin.object, [swapped]);
 
@@ -201,9 +201,9 @@ export class PositionManager {
         zapAmount.toString(),
       ]);
       const swapped = (await trade.swap({
-        tx,
+        tx: tx as any,
         coinIn: zapCoin,
-        client: jsonRpcProvider,
+        client: jsonRpcProvider as any,
       })) as TransactionResult;
       tx.mergeCoins(targetCoin.object, [swapped]);
 
