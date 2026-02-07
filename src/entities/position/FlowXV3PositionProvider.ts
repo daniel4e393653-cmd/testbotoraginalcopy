@@ -35,8 +35,8 @@ export class FlowXV3PositionProvider implements IPositionProvider {
     return this._fromObjectData(object.data);
   }
 
-  public async getLargestPosition(owner: string, poolId: string) {
-    let largestPosition: Position;
+  public async getLargestPosition(owner: string, poolId: string): Promise<Position | undefined> {
+    let largestPosition: Position | undefined;
     let cursor,
       hasNextPage = false;
     do {
@@ -68,18 +68,16 @@ export class FlowXV3PositionProvider implements IPositionProvider {
           }
         } catch (err) {
           logger.error(
-            `Failed to parse position object ${object.data.objectId}`,
+            `Failed to parse position object ${object.data.objectId}, skipping`,
             err
           );
-          throw err;
         }
       }
     } while (hasNextPage);
 
-    invariant(
-      largestPosition,
-      `No position found for owner ${owner} and pool ${poolId}`
-    );
+    if (!largestPosition) {
+      logger.warn(`No position found for owner ${owner} and pool ${poolId}`);
+    }
     return largestPosition;
   }
 

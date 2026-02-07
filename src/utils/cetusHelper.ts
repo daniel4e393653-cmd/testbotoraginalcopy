@@ -53,3 +53,17 @@ export function alignTickToSpacing(tick: number, tickSpacing: number, roundUp?: 
   }
   return Math.round(tick / tickSpacing) * tickSpacing;
 }
+
+/**
+ * Clamps a tick to the valid [minTick, maxTick] range, aligned to tick spacing.
+ * @param tick - The tick index to clamp
+ * @param tickSpacing - The pool's tick spacing
+ * @param minTick - Minimum allowed tick (e.g., ClmmTickMath.MIN_TICK)
+ * @param maxTick - Maximum allowed tick (e.g., ClmmTickMath.MAX_TICK)
+ * @returns The clamped tick index, aligned to tickSpacing
+ */
+export function clampTickToRange(tick: number, tickSpacing: number, minTick: number, maxTick: number): number {
+  const alignedMin = Math.ceil(minTick / tickSpacing) * tickSpacing;
+  const alignedMax = Math.floor(maxTick / tickSpacing) * tickSpacing;
+  return Math.max(alignedMin, Math.min(alignedMax, tick));
+}
