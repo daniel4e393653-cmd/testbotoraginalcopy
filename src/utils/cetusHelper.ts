@@ -36,3 +36,13 @@ export function extractTickIndex(
     `Invalid ${fieldName} structure for object ${objectId}: expected MoveObject<MoveInteger> or primitive value`
   );
 }
+
+/**
+ * Aligns a tick index to the nearest valid tick based on tick spacing
+ * @param tick - The tick index to align
+ * @param tickSpacing - The pool's tick spacing
+ * @returns The aligned tick index
+ */
+export function alignTickToSpacing(tick: number, tickSpacing: number): number {
+  return Math.round(tick / tickSpacing) * tickSpacing;
+}
