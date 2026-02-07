@@ -159,6 +159,6 @@ if (!rpcEndpoint) {
 export const jsonRpcProvider = new SuiClient({
   transport: new HTTPTransport({
     rpcEndpoints: [rpcEndpoint],
-    maxRetry: 0,
+    maxRetry: 3,
   }),
 });

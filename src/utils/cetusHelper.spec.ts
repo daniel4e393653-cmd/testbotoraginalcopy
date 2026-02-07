@@ -135,11 +135,38 @@ describe("cetusHelper", () => {
         alignTickToSpacing(-500000, tickSpacing, true),
         tickSpacing, MIN_TICK, MAX_TICK
       );
+      const alignedMax = Math.floor(MAX_TICK / tickSpacing) * tickSpacing;
       // After clamping, lower might be >= upper, so apply safety check
       if (tickLower >= tickUpper) {
-        tickUpper = tickLower + tickSpacing;
+        if (tickLower + tickSpacing <= alignedMax) {
+          tickUpper = tickLower + tickSpacing;
+        } else {
+          tickUpper = alignedMax;
+          tickLower = alignedMax - tickSpacing;
+        }
       }
       expect(tickLower).toBeLessThan(tickUpper);
+      expect(tickLower % tickSpacing).toBe(0);
+      expect(tickUpper % tickSpacing).toBe(0);
+    });
+
+    it("should handle MAX_TICK edge case where tickLower + tickSpacing exceeds range", () => {
+      const tickSpacing = 60;
+      const alignedMax = Math.floor(MAX_TICK / tickSpacing) * tickSpacing;
+      // Both ticks clamped to alignedMax
+      let tickLower = alignedMax;
+      let tickUpper = alignedMax;
+      // Safety check should adjust tickLower down instead of tickUpper up
+      if (tickLower >= tickUpper) {
+        if (tickLower + tickSpacing <= alignedMax) {
+          tickUpper = tickLower + tickSpacing;
+        } else {
+          tickUpper = alignedMax;
+          tickLower = alignedMax - tickSpacing;
+        }
+      }
+      expect(tickLower).toBeLessThan(tickUpper);
+      expect(tickUpper).toBeLessThanOrEqual(alignedMax);
       expect(tickLower % tickSpacing).toBe(0);
       expect(tickUpper % tickSpacing).toBe(0);
     });
