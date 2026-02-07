@@ -11,7 +11,7 @@ import { CetusPositionRawData } from "../../types";
 import { getLogger } from "../../utils/Logger";
 import { IPositionProvider } from "./IPositionProvider";
 import { Position } from "./Position";
-import { extractTickIndex } from "../../utils/cetusHelper";
+import { extractTickIndex, alignTickToSpacing } from "../../utils/cetusHelper";
 
 const logger = getLogger(module);
 
@@ -91,13 +91,21 @@ export class CetusPositionProvider implements IPositionProvider {
 
     const pool = await new CetusPoolProvider().getPoolById(rawData.pool);
 
+    // Extract raw tick values
+    const tickLowerRaw = extractTickIndex(rawData.tick_lower_index, object.objectId, "tick_lower_index");
+    const tickUpperRaw = extractTickIndex(rawData.tick_upper_index, object.objectId, "tick_upper_index");
+
+    // Align ticks to pool's tick spacing to ensure they're valid
+    const tickLower = alignTickToSpacing(tickLowerRaw, pool.tickSpacing);
+    const tickUpper = alignTickToSpacing(tickUpperRaw, pool.tickSpacing);
+
     const position = new Position({
       objectId: object.objectId,
       liquidity: rawData.liquidity,
       owner: object.owner["AddressOwner"] ?? "",
       pool,
-      tickLower: extractTickIndex(rawData.tick_lower_index, object.objectId, "tick_lower_index"),
-      tickUpper: extractTickIndex(rawData.tick_upper_index, object.objectId, "tick_upper_index"),
+      tickLower,
+      tickUpper,
       feeGrowthInsideXLast: rawData.fee_growth_inside_a,
       feeGrowthInsideYLast: rawData.fee_growth_inside_b,
       coinsOwedX: rawData.fee_owed_a,
