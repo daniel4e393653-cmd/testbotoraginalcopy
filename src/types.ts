@@ -77,7 +77,7 @@ export type CetusPoolRawData = {
   fee_growth_global_a: string;
   fee_growth_global_b: string;
   fee_rate: string;
-  reward_infos: MoveObject<RewardInfo>[];
+  reward_infos?: MoveObject<RewardInfo>[];
 };
 
 export type CetusPositionRawData = {

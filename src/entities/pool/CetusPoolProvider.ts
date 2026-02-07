@@ -69,7 +69,7 @@ export class CetusPoolProvider implements IPoolProvder {
     const pool = new Pool({
       objectId: object.objectId,
       coins: tokens,
-      poolRewards: rawData.reward_infos.map((rewardInfo, index) => {
+      poolRewards: (rawData.reward_infos || []).map((rewardInfo, index) => {
         invariant(
           rewardInfo.fields && 
           rewardInfo.fields.reward_coin_type && 
