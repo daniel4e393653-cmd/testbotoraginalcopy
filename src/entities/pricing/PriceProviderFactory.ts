@@ -1,6 +1,7 @@
 import { PriceProvider } from "./PriceProvider";
 import { PythPriceProvider } from "./PythPriceProvider";
 import { FlowXPriceProvider } from "./FlowXPriceProvider";
+import { CetusPriceProvider } from "./CetusPriceProvider";
 import { AggregatorPriceProvider } from "./AggregatorPriceProvider";
 import { CacheablePriceProvider } from "./CacheablePriceProvider";
 import { CACHE_CONFIG } from "../../config/cache";
@@ -8,6 +9,7 @@ import { CACHE_CONFIG } from "../../config/cache";
 export enum PriceProviderType {
   PYTH = "pyth",
   FLOWX = "flowx",
+  CETUS = "cetus",
   AGGREGATED = "aggregated",
 }
 
@@ -43,6 +45,16 @@ export class PriceProviderFactory {
               provider, 
               CACHE_CONFIG.FLOWX_PRICE_TTL, 
               "prices:flowx"
+            )
+          : provider;
+
+      case PriceProviderType.CETUS:
+        provider = new CetusPriceProvider();
+        return enableCache 
+          ? new CacheablePriceProvider(
+              provider, 
+              CACHE_CONFIG.CETUS_PRICE_TTL, 
+              "prices:cetus"
             )
           : provider;
 
