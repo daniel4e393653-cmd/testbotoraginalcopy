@@ -10,7 +10,7 @@
   "dependencies": {
     "@cetusprotocol/cetus-sui-clmm-sdk": "^5.4.0",
     "@flowx-finance/sdk": "^1.15.0",
-    "@mysten/sui": "1.27.1",
+    "@mysten/sui": "^1.38.0",
     "@types/bn.js": "^5.1.6",
     "@types/lodash": "^4.17.16",
     "axios": "^1.8.3",
@@ -35,5 +35,8 @@
     "tscpaths": "^0.0.9",
     "typescript": "^5.8.2"
   },
-  "packageManager": "yarn@1.22.22"
+  "packageManager": "yarn@1.22.22",
+  "resolutions": {
+    "@mysten/sui": "^1.38.0"
+  }
 }
