@@ -36,6 +36,32 @@ describe("cetusHelper", () => {
       expect(alignTickToSpacing(5, 1)).toBe(5);
       expect(alignTickToSpacing(-5, 1)).toBe(-5);
     });
+
+    it("should round down when roundUp is false", () => {
+      expect(alignTickToSpacing(121, 60, false)).toBe(120);
+      expect(alignTickToSpacing(179, 60, false)).toBe(120);
+      expect(alignTickToSpacing(120, 60, false)).toBe(120);
+      expect(alignTickToSpacing(-61, 60, false)).toBe(-120);
+    });
+
+    it("should round up when roundUp is true", () => {
+      expect(alignTickToSpacing(121, 60, true)).toBe(180);
+      expect(alignTickToSpacing(179, 60, true)).toBe(180);
+      expect(alignTickToSpacing(120, 60, true)).toBe(120);
+      expect(alignTickToSpacing(-119, 60, true)).toBe(-60);
+    });
+
+    it("should keep lower < upper with directional rounding for close ticks", () => {
+      const tickSpacing = 60;
+      // ticks within the same spacing interval
+      const lowerRaw = 61;
+      const upperRaw = 119;
+      const lower = alignTickToSpacing(lowerRaw, tickSpacing, false);
+      const upper = alignTickToSpacing(upperRaw, tickSpacing, true);
+      expect(lower).toBe(60);
+      expect(upper).toBe(120);
+      expect(lower).toBeLessThan(upper);
+    });
   });
 
   describe("extractTickIndex", () => {
