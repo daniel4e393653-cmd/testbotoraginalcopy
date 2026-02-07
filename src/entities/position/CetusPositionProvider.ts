@@ -99,13 +99,13 @@ export class CetusPositionProvider implements IPositionProvider {
       tickLower: Number(
         BigInt.asIntN(
           TICK_INDEX_BITS,
-          BigInt(rawData.tick_lower_index.fields.bits)
+          BigInt(rawData.tick_lower_index?.fields?.bits ?? 0)
         )
       ),
       tickUpper: Number(
         BigInt.asIntN(
           TICK_INDEX_BITS,
-          BigInt(rawData.tick_upper_index.fields.bits)
+          BigInt(rawData.tick_upper_index?.fields?.bits ?? 0)
         )
       ),
       feeGrowthInsideXLast: rawData.fee_growth_inside_a,
