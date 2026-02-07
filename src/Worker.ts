@@ -233,7 +233,7 @@ export class Worker {
       (o) =>
         o.type === "created" &&
         o.objectType ===
-          MAPPING_POSITION_OBJECT_TYPE[(position.pool as Pool).protocol]
+          MAPPING_POSITION_OBJECT_TYPE[(position.pool as unknown as Pool).protocol]
     )?.["objectId"];
   }
 

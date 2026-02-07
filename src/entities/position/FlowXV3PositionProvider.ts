@@ -112,7 +112,7 @@ export class FlowXV3PositionProvider implements IPositionProvider {
       objectId: object.objectId,
       liquidity: rawData.liquidity,
       owner: object.owner["AddressOwner"] ?? "",
-      pool,
+      pool: pool as any,
       tickLower,
       tickUpper,
       feeGrowthInsideXLast: rawData.fee_growth_inside_x_last,

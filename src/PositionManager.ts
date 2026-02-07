@@ -166,7 +166,7 @@ export class PositionManager {
     ) =>
     async (tx: Transaction) => {
       const zapAmount = await ZapCalculator.zapAmount({
-        pool: position.pool as Pool,
+        pool: position.pool as unknown as Pool,
         tickLower: position.tickLower,
         tickUpper: position.tickUpper,
         amount: amount,
@@ -217,7 +217,7 @@ export class PositionManager {
     (position: Position, tickLower: number, tickUpper: number) =>
     async (tx: Transaction) => {
       const positionManager = createPositionManager(
-        (position.pool as Pool).protocol
+        (position.pool as unknown as Pool).protocol
       );
       const [coinX, coinY] = [position.pool.coinX, position.pool.coinY];
       const [feeAmounts, rewardAmounts] = await Promise.all([
@@ -422,7 +422,7 @@ export class PositionManager {
 
   compound = (position: Position) => async (tx: Transaction) => {
     const positionManager = createPositionManager(
-      (position.pool as Pool).protocol
+      (position.pool as unknown as Pool).protocol
     );
     const [coinX, coinY] = [position.pool.coinX, position.pool.coinY];
     const [feeAmounts, rewardAmounts] = await Promise.all([

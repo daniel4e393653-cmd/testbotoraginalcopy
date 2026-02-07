@@ -49,6 +49,17 @@ export class Fraction {
 
   private toFraction(other: Fraction | BN | string | number): Fraction {
     if (other instanceof Fraction) return other;
+    if (
+      typeof other === "object" &&
+      other !== null &&
+      "numerator" in other &&
+      "denominator" in other
+    ) {
+      return new Fraction(
+        toBN((other as any).numerator),
+        toBN((other as any).denominator)
+      );
+    }
     return new Fraction(toBN(other));
   }
 
@@ -133,13 +144,34 @@ export class Fraction {
 
     let result: string;
     if (decimals === 0) {
-      result = intPart;
+      // Round half up: if remainder * 2 >= denominator, round up
+      const doubled = remainder.mul(new BN(2));
+      const rounded = doubled.gte(this.denominator) ? quotient.add(new BN(1)) : quotient;
+      let roundedStr = rounded.toString(10);
+      if (groupSep) {
+        roundedStr = roundedStr.replace(/\B(?=(\d{3})+(?!\d))/g, groupSep);
+      }
+      result = roundedStr;
     } else {
-      // Compute fractional digits: remainder * 10^decimals / denominator
+      // Compute fractional digits with rounding: remainder * 10^(decimals+1) / denominator
       const scale = new BN(10).pow(new BN(decimals));
-      const fracValue = remainder.mul(scale).div(this.denominator);
-      const fracStr = fracValue.toString(10).padStart(decimals, "0");
-      result = intPart + decSep + fracStr;
+      const scaledRemainder = remainder.mul(scale).mul(new BN(10));
+      const fracRaw = scaledRemainder.div(this.denominator);
+      // Round last digit
+      const fracRounded = fracRaw.add(new BN(5)).div(new BN(10));
+      // Handle carry
+      const maxFrac = scale;
+      if (fracRounded.gte(maxFrac)) {
+        const carry = quotient.add(new BN(1));
+        let carryStr = carry.toString(10);
+        if (groupSep) {
+          carryStr = carryStr.replace(/\B(?=(\d{3})+(?!\d))/g, groupSep);
+        }
+        result = carryStr + decSep + "0".repeat(decimals);
+      } else {
+        const fracStr = fracRounded.toString(10).padStart(decimals, "0");
+        result = intPart + decSep + fracStr;
+      }
     }
 
     return isNeg ? "-" + result : result;

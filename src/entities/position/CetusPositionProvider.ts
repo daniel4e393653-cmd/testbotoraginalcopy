@@ -118,7 +118,7 @@ export class CetusPositionProvider implements IPositionProvider {
       objectId: object.objectId,
       liquidity: rawData.liquidity,
       owner: object.owner["AddressOwner"] ?? "",
-      pool,
+      pool: pool as any,
       tickLower,
       tickUpper,
       feeGrowthInsideXLast: rawData.fee_growth_inside_a,
