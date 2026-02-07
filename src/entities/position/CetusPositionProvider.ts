@@ -2,7 +2,7 @@ import invariant from "tiny-invariant";
 import BN from "bn.js";
 import { SuiObjectData } from "@mysten/sui/client";
 import { normalizeSuiObjectId } from "@mysten/sui/utils";
-import { Protocol } from "@flowx-finance/sdk";
+import { Protocol, ClmmTickMath } from "@flowx-finance/sdk";
 
 import { jsonRpcProvider } from "../../utils/jsonRpcProvider";
 import { MAPPING_POSITION_OBJECT_TYPE } from "../../constants";
@@ -11,7 +11,7 @@ import { CetusPositionRawData } from "../../types";
 import { getLogger } from "../../utils/Logger";
 import { IPositionProvider } from "./IPositionProvider";
 import { Position } from "./Position";
-import { extractTickIndex, alignTickToSpacing } from "../../utils/cetusHelper";
+import { extractTickIndex, alignTickToSpacing, clampTickToRange } from "../../utils/cetusHelper";
 
 const logger = getLogger(module);
 
@@ -35,8 +35,8 @@ export class CetusPositionProvider implements IPositionProvider {
     return this._fromObjectData(object.data);
   }
 
-  public async getLargestPosition(owner: string, poolId: string) {
-    let largestPosition: Position;
+  public async getLargestPosition(owner: string, poolId: string): Promise<Position | undefined> {
+    let largestPosition: Position | undefined;
     let cursor,
       hasNextPage = false;
     do {
@@ -75,10 +75,9 @@ export class CetusPositionProvider implements IPositionProvider {
       }
     } while (hasNextPage);
 
-    invariant(
-      largestPosition,
-      `No position found for owner ${owner} and pool ${poolId}`
-    );
+    if (!largestPosition) {
+      logger.warn(`No position found for owner ${owner} and pool ${poolId}`);
+    }
     return largestPosition;
   }
 
@@ -100,7 +99,11 @@ export class CetusPositionProvider implements IPositionProvider {
     let tickLower = alignTickToSpacing(tickLowerRaw, pool.tickSpacing, false);
     let tickUpper = alignTickToSpacing(tickUpperRaw, pool.tickSpacing, true);
 
-    // Safety check: ensure tickLower < tickUpper after alignment
+    // Clamp ticks to valid MIN_TICK/MAX_TICK range
+    tickLower = clampTickToRange(tickLower, pool.tickSpacing, ClmmTickMath.MIN_TICK, ClmmTickMath.MAX_TICK);
+    tickUpper = clampTickToRange(tickUpper, pool.tickSpacing, ClmmTickMath.MIN_TICK, ClmmTickMath.MAX_TICK);
+
+    // Safety check: ensure tickLower < tickUpper after alignment and clamping
     if (tickLower >= tickUpper) {
       tickUpper = tickLower + pool.tickSpacing;
     }

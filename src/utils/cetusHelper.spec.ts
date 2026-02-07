@@ -1,4 +1,4 @@
-import { alignTickToSpacing, extractTickIndex } from "./cetusHelper";
+import { alignTickToSpacing, extractTickIndex, clampTickToRange } from "./cetusHelper";
 
 describe("cetusHelper", () => {
   describe("alignTickToSpacing", () => {
@@ -92,6 +92,56 @@ describe("cetusHelper", () => {
     it("should throw on invalid structure", () => {
       expect(() => extractTickIndex(undefined, "test_obj", "test_field")).toThrow();
       expect(() => extractTickIndex({} as any, "test_obj", "test_field")).toThrow();
+    });
+  });
+
+  describe("clampTickToRange", () => {
+    const MIN_TICK = -443636;
+    const MAX_TICK = 443636;
+
+    it("should return tick unchanged when within range", () => {
+      expect(clampTickToRange(120, 60, MIN_TICK, MAX_TICK)).toBe(120);
+      expect(clampTickToRange(0, 60, MIN_TICK, MAX_TICK)).toBe(0);
+      expect(clampTickToRange(-120, 60, MIN_TICK, MAX_TICK)).toBe(-120);
+    });
+
+    it("should clamp tick to aligned minimum when below range", () => {
+      const tickSpacing = 60;
+      const alignedMin = Math.ceil(MIN_TICK / tickSpacing) * tickSpacing;
+      expect(clampTickToRange(-999999, tickSpacing, MIN_TICK, MAX_TICK)).toBe(alignedMin);
+    });
+
+    it("should clamp tick to aligned maximum when above range", () => {
+      const tickSpacing = 60;
+      const alignedMax = Math.floor(MAX_TICK / tickSpacing) * tickSpacing;
+      expect(clampTickToRange(999999, tickSpacing, MIN_TICK, MAX_TICK)).toBe(alignedMax);
+    });
+
+    it("should ensure clamped ticks are aligned to spacing", () => {
+      const tickSpacing = 60;
+      const result = clampTickToRange(-999999, tickSpacing, MIN_TICK, MAX_TICK);
+      expect(Math.abs(result % tickSpacing)).toBe(0);
+      expect(result).toBeGreaterThanOrEqual(MIN_TICK);
+    });
+
+    it("should allow construction of valid tick range after clamping", () => {
+      const tickSpacing = 60;
+      // Simulate a scenario where raw ticks are inverted
+      let tickLower = clampTickToRange(
+        alignTickToSpacing(500000, tickSpacing, false),
+        tickSpacing, MIN_TICK, MAX_TICK
+      );
+      let tickUpper = clampTickToRange(
+        alignTickToSpacing(-500000, tickSpacing, true),
+        tickSpacing, MIN_TICK, MAX_TICK
+      );
+      // After clamping, lower might be >= upper, so apply safety check
+      if (tickLower >= tickUpper) {
+        tickUpper = tickLower + tickSpacing;
+      }
+      expect(tickLower).toBeLessThan(tickUpper);
+      expect(tickLower % tickSpacing).toBe(0);
+      expect(tickUpper % tickSpacing).toBe(0);
     });
   });
 });

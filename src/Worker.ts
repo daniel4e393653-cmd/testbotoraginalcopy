@@ -124,10 +124,17 @@ export class Worker {
 
   private async synchronize() {
     if (!this.position) {
-      this.position = await this.positionProvider.getLargestPosition(
+      const position = await this.positionProvider.getLargestPosition(
         this.signer.toSuiAddress(),
         this.poolId
       );
+      if (!position) {
+        throw new Error(
+          `No position found for owner ${this.signer.toSuiAddress()} and pool ${this.poolId}. ` +
+          `Ensure you have an open position in this pool.`
+        );
+      }
+      this.position = position;
     } else {
       this.position = await this.positionProvider.getPositionById(
         this.position.id
