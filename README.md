@@ -89,8 +89,8 @@ Create a `.env` file in the root directory with the following variables:
 ### Required Configuration
 
 ```env
-# Protocol to use (FLOWX_V3, CETUS, TURBOS_FIANCE, BLUEFIN, MAGMA_FINANCE)
-PROTOCOL=FLOWX_V3
+# Protocol to use (FLOWX_CLMM, CETUS, TURBOS, BLUEFIN, MAGMA_FINANCE)
+PROTOCOL=FLOWX_CLMM
 
 # Target pool ID for rebalancing
 TARGET_POOL=0x...
@@ -148,6 +148,22 @@ The bot will:
 2. Monitor the target pool for price movements
 3. Automatically rebalance positions when price moves outside the configured range
 4. Compound rewards based on the schedule and threshold settings
+
+### Using Different Protocols
+
+#### FlowX V3
+```env
+PROTOCOL=FLOWX_CLMM
+TARGET_POOL=0x88cec280ed5406af7951ef768b305de5323b843cc127bcab988d08770d00a5f7
+```
+
+#### Cetus
+```env
+PROTOCOL=CETUS
+TARGET_POOL=<your_cetus_pool_id>
+```
+
+Both protocols use the same rebalancing logic and parameters. Simply change the `PROTOCOL` and `TARGET_POOL` values in your `.env` file.
 
 ### Testing
 
