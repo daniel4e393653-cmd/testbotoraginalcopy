@@ -45,7 +45,7 @@ export class AggregatorPriceProvider implements PriceProvider {
     ];
   }
 
-  async getPrice(token: string): Promise<number> {
+  async getPrice(token: string): Promise<number | null> {
     const prices = await Promise.all(
       this.priceProviders.map(({ provider }) => provider.getPrice(token))
     );

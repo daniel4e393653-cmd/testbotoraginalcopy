@@ -13,7 +13,7 @@ export class CacheablePriceProvider implements PriceProvider {
     this.cacheKeyPrefix = cacheKeyPrefix;
   }
 
-  async getPrice(token: string): Promise<number> {
+  async getPrice(token: string): Promise<number | null> {
     const cacheKey = `${this.cacheKeyPrefix}:${token}`;
     const cachedPrice = cache.get<number>(cacheKey);
     

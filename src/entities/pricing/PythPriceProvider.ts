@@ -13,7 +13,7 @@ export class PythPriceProvider implements PriceProvider {
   private baseURL = "https://hermes.pyth.network";
   private connector = new FetchProviderConnector();
 
-  async getPrice(token: string): Promise<number> {
+  async getPrice(token: string): Promise<number | null> {
     let priceFeedId = cache.get<string>(`price_feed_ids:${token}`);
     if (!priceFeedId) {
       const tokenInfo = await getToken(token);

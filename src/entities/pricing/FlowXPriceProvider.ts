@@ -19,7 +19,7 @@ export class FlowXPriceProvider implements PriceProvider {
     this.graphqlProvider = new GraphqlProvider("mainnet", { keepalive: true });
   }
 
-  async getPrice(token: string): Promise<number> {
+  async getPrice(token: string): Promise<number | null> {
     const response: any = await this.graphqlProvider.client.request(
       MULTI_GET_COINS_GRAPHQL_QUERY,
       {

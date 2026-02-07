@@ -88,7 +88,7 @@ export class CetusPriceProvider implements PriceProvider {
   private baseURL = "https://api.geckoterminal.com/api/v2";
   private connector = new FetchProviderConnector();
 
-  async getPrice(token: string): Promise<number> {
+  async getPrice(token: string): Promise<number | null> {
     try {
       // Normalize the token address for GeckoTerminal
       // GeckoTerminal uses the full coin type but expects it without 0x prefix and lowercase
