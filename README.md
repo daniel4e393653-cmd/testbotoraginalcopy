@@ -19,7 +19,7 @@ The bot consists of several key components:
 - **Worker**: Main orchestrator that manages the rebalancing process
 - **PositionManager**: Handles position creation, closing, and management
 - **Pool Providers**: Interface with different CLMM protocols
-- **Price Providers**: Aggregate price data from multiple sources (Pyth, FlowX, etc.)
+- **Price Providers**: Aggregate price data from multiple sources (Pyth, FlowX, Cetus via GeckoTerminal)
 - **Transaction Executor**: Manages Sui blockchain transactions with caching
 
 ## How It Works

@@ -4,6 +4,7 @@ import invariant from "tiny-invariant";
 import { PriceProvider } from "./PriceProvider";
 import { PythPriceProvider } from "./PythPriceProvider";
 import { FlowXPriceProvider } from "./FlowXPriceProvider";
+import { CetusPriceProvider } from "./CetusPriceProvider";
 import { CacheablePriceProvider } from "./CacheablePriceProvider";
 import { cache } from "../../utils/cache";
 import { CACHE_CONFIG } from "../../config/cache";
@@ -23,7 +24,7 @@ export class AggregatorPriceProvider implements PriceProvider {
           CACHE_CONFIG.PYTH_PRICE_TTL,
           "prices:pyth"
         ),
-        weight: 8,
+        weight: 6,
       },
       {
         provider: new CacheablePriceProvider(
@@ -33,10 +34,18 @@ export class AggregatorPriceProvider implements PriceProvider {
         ),
         weight: 2,
       },
+      {
+        provider: new CacheablePriceProvider(
+          new CetusPriceProvider(),
+          CACHE_CONFIG.CETUS_PRICE_TTL,
+          "prices:cetus"
+        ),
+        weight: 2,
+      },
     ];
   }
 
-  async getPrice(token: string): Promise<number> {
+  async getPrice(token: string): Promise<number | null> {
     const prices = await Promise.all(
       this.priceProviders.map(({ provider }) => provider.getPrice(token))
     );
