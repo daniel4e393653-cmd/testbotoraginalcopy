@@ -96,8 +96,14 @@ export class CetusPositionProvider implements IPositionProvider {
     const tickUpperRaw = extractTickIndex(rawData.tick_upper_index, object.objectId, "tick_upper_index");
 
     // Align ticks to pool's tick spacing to ensure they're valid
-    const tickLower = alignTickToSpacing(tickLowerRaw, pool.tickSpacing);
-    const tickUpper = alignTickToSpacing(tickUpperRaw, pool.tickSpacing);
+    // Round lower tick down and upper tick up to preserve tick ordering
+    let tickLower = alignTickToSpacing(tickLowerRaw, pool.tickSpacing, false);
+    let tickUpper = alignTickToSpacing(tickUpperRaw, pool.tickSpacing, true);
+
+    // Safety check: ensure tickLower < tickUpper after alignment
+    if (tickLower >= tickUpper) {
+      tickUpper = tickLower + pool.tickSpacing;
+    }
 
     const position = new Position({
       objectId: object.objectId,

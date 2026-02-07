@@ -41,8 +41,15 @@ export function extractTickIndex(
  * Aligns a tick index to the nearest valid tick based on tick spacing
  * @param tick - The tick index to align
  * @param tickSpacing - The pool's tick spacing
+ * @param roundUp - If true, rounds up (ceil); if false, rounds down (floor); if undefined, rounds to nearest
  * @returns The aligned tick index
  */
-export function alignTickToSpacing(tick: number, tickSpacing: number): number {
+export function alignTickToSpacing(tick: number, tickSpacing: number, roundUp?: boolean): number {
+  if (roundUp === true) {
+    return Math.ceil(tick / tickSpacing) * tickSpacing;
+  }
+  if (roundUp === false) {
+    return Math.floor(tick / tickSpacing) * tickSpacing;
+  }
   return Math.round(tick / tickSpacing) * tickSpacing;
 }
