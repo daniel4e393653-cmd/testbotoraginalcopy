@@ -1,5 +1,6 @@
-import { ClmmTickMath, Percent } from "@flowx-finance/sdk";
 import BN from "bn.js";
+import { tickIndexToSqrtPriceX64 } from "./clmmMath";
+import { Percent } from "./Percent";
 
 export class PriceRange {
   priceLower: BN;
@@ -18,8 +19,8 @@ export class PriceRange {
   ) {
     this.valid = true;
 
-    this.priceLower = ClmmTickMath.tickIndexToSqrtPriceX64(tickLower);
-    this.priceUpper = ClmmTickMath.tickIndexToSqrtPriceX64(tickUpper);
+    this.priceLower = tickIndexToSqrtPriceX64(tickLower);
+    this.priceUpper = tickIndexToSqrtPriceX64(tickUpper);
 
     // Safety: wrong tick order
     if (this.priceUpper.lte(this.priceLower)) {

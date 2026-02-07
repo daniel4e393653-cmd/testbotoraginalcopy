@@ -10,7 +10,8 @@ import {
   SUI_TYPE_ARG,
 } from "@mysten/sui/utils";
 
-import { MaxUint64, Percent } from "@flowx-finance/sdk";
+import { BPS, MAX_U64 } from "../../constants";
+import { Percent } from "../../utils/Percent";
 
 import {
   IncreaseLiquidityOptions,

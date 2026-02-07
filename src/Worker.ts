@@ -1,7 +1,7 @@
 import { decodeSuiPrivateKey } from "@mysten/sui/cryptography";
 import { Ed25519Keypair } from "@mysten/sui/keypairs/ed25519";
 import { Transaction } from "@mysten/sui/transactions";
-import { nowInMilliseconds, Percent } from "@flowx-finance/sdk";
+import { Percent } from "./utils/Percent";
 import BN from "bn.js";
 import invariant from "tiny-invariant";
 
@@ -84,7 +84,7 @@ export class Worker {
   public start(): void {
     if (this.isStarted) return;
     this.isStarted = true;
-    this.lastCompoundRewardAt = nowInMilliseconds();
+    this.lastCompoundRewardAt = Date.now();
     this.onTick();
   }
 
@@ -178,7 +178,7 @@ export class Worker {
         targetTickLower,
         targetTickUpper
       );
-      this.lastCompoundRewardAt = nowInMilliseconds();
+      this.lastCompoundRewardAt = Date.now();
 
       if (newPositionId) {
         await sleep(5000);
@@ -202,14 +202,14 @@ export class Worker {
       return;
     }
 
-    const elapsedTimeMs = nowInMilliseconds() - this.lastCompoundRewardAt;
+    const elapsedTimeMs = Date.now() - this.lastCompoundRewardAt;
 
     if (
       !isNaN(this.compoundRewardsScheduleMs) &&
       elapsedTimeMs > this.compoundRewardsScheduleMs
     ) {
       await this.executeCompound(this.position);
-      this.lastCompoundRewardAt = nowInMilliseconds();
+      this.lastCompoundRewardAt = Date.now();
     }
   }
 
