@@ -1,6 +1,5 @@
 import { PriceProvider } from "./PriceProvider";
 import { FetchProviderConnector } from "../connector";
-import { getToken } from "../../utils/tokenHelper";
 
 interface GeckoTerminalPoolResponse {
   data: {
@@ -91,10 +90,8 @@ export class CetusPriceProvider implements PriceProvider {
 
   async getPrice(token: string): Promise<number> {
     try {
-      const tokenInfo = await getToken(token);
-      
       // Normalize the token address for GeckoTerminal
-      // Remove '0x' prefix if present and ensure lowercase
+      // GeckoTerminal uses the full coin type but expects it without 0x prefix and lowercase
       const normalizedAddress = token.toLowerCase().replace(/^0x/, '');
       
       // Try to get token info from GeckoTerminal
