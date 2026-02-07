@@ -18,12 +18,14 @@ describe("cetusHelper", () => {
     it("should handle negative ticks correctly", () => {
       expect(alignTickToSpacing(-121, 60)).toBe(-120);
       expect(alignTickToSpacing(-149, 60)).toBe(-120);
-      expect(alignTickToSpacing(-150, 60)).toBe(-120); // Math.round(-2.5) = -2
+      // Math.round(-150/60) = Math.round(-2.5) = -2 (rounds toward positive infinity)
+      expect(alignTickToSpacing(-150, 60)).toBe(-120);
       expect(alignTickToSpacing(-151, 60)).toBe(-180);
     });
 
     it("should work with different tick spacings", () => {
       expect(alignTickToSpacing(101, 10)).toBe(100);
+      // Math.round(105/10) = Math.round(10.5) = 11 (rounds toward positive infinity)
       expect(alignTickToSpacing(105, 10)).toBe(110);
       expect(alignTickToSpacing(1005, 100)).toBe(1000);
       expect(alignTickToSpacing(1050, 100)).toBe(1100);
