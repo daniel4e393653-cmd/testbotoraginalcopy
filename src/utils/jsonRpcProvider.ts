@@ -148,9 +148,17 @@ class HTTPTransport implements SuiTransport {
   }
 }
 
+const rpcEndpoint = process.env.JSON_RPC_ENDPOINT;
+
+if (!rpcEndpoint) {
+  throw new Error(
+    'JSON_RPC_ENDPOINT environment variable is required. Please set it in your .env file.'
+  );
+}
+
 export const jsonRpcProvider = new SuiClient({
   transport: new HTTPTransport({
-    rpcEndpoints: [process.env.JSON_RPC_ENDPOINT],
+    rpcEndpoints: [rpcEndpoint],
     maxRetry: 0,
   }),
 });

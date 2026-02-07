@@ -89,6 +89,9 @@ Create a `.env` file in the root directory with the following variables:
 ### Required Configuration
 
 ```env
+# RPC Endpoint (REQUIRED - must be set or the bot will fail to start)
+JSON_RPC_ENDPOINT=https://fullnode.mainnet.sui.io:443
+
 # Protocol to use (FLOWX_V3, CETUS, TURBOS_FIANCE, BLUEFIN, MAGMA_FINANCE)
 PROTOCOL=FLOWX_V3
 
@@ -117,6 +120,44 @@ MULTIPLIER=1
 
 # Reward compounding schedule (in milliseconds)
 COMPOUND_REWARDS_SCHEDULE_MS=3600000
+```
+
+### Cetus Protocol Configuration
+
+For Cetus protocol specifically, use the following configuration (also available in `.env.cetus.example`):
+
+```env
+# RPC Endpoint
+JSON_RPC_ENDPOINT=https://fullnode.mainnet.sui.io:443
+
+# Set protocol to CETUS
+PROTOCOL=CETUS
+
+# Example Cetus pool ID
+TARGET_POOL=0xb8d7d9e66a60c239e7a60110efcf8de6c705580ed924d0dde141f4a0e2c90105
+
+# Price ranges (typically 500-5000 for Cetus)
+BPRICE_PERCENT=500     # 0.05%
+TPRICE_PERCENT=500     # 0.05%
+
+# Trading parameters
+SLIPPAGE_TOLERANCE=1000                    # 0.1%
+PRICE_IMPACT_PERCENT_THRESHOLD=3000        # 0.3%
+
+# Minimum zap amounts (adjust based on token decimals)
+MIN_ZAP_AMOUNT_X=1000000
+MIN_ZAP_AMOUNT_Y=1000000
+
+# Position settings
+MULTIPLIER=1
+REBALANCE_RETRIES=3
+
+# Reward compounding
+REWARD_THRESHOLD_USD=1
+COMPOUND_REWARDS_SCHEDULE_MS=3600000       # 1 hour
+
+# Your wallet private key (REQUIRED)
+PRIVATE_KEY=your_private_key_here
 ```
 
 ### Optional Configuration
