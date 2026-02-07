@@ -9,6 +9,7 @@ import { MAPPING_POOL_OBJECT_TYPE } from "../../constants";
 import { CetusPoolRawData } from "../../types";
 import { IPoolProvder } from "./IPoolProvder";
 import { extractTickIndex } from "../../utils/cetusHelper";
+import { extractTypeArguments } from "../../utils/typeHelper";
 
 export class CetusPoolProvider implements IPoolProvder {
   public async getPoolById(poolId: string): Promise<Pool> {
@@ -36,18 +37,28 @@ export class CetusPoolProvider implements IPoolProvder {
     );
     const rawData = object.content.fields as unknown as CetusPoolRawData;
 
-    invariant(
-      rawData.coin_type_a && rawData.coin_type_a.fields,
-      `Invalid pool data structure: coin_type_a is missing or malformed for pool ${object.objectId}`
-    );
-    invariant(
-      rawData.coin_type_b && rawData.coin_type_b.fields,
-      `Invalid pool data structure: coin_type_b is missing or malformed for pool ${object.objectId}`
-    );
+    // Extract coin types from either fields or type parameters
+    let coinTypeA: string;
+    let coinTypeB: string;
+
+    // Try to get coin types from fields first (old structure)
+    if (rawData.coin_type_a && rawData.coin_type_a.fields && rawData.coin_type_a.fields.name) {
+      coinTypeA = `0x${rawData.coin_type_a.fields.name}`;
+      coinTypeB = `0x${rawData.coin_type_b.fields.name}`;
+    } else {
+      // Fall back to extracting from type parameters (new structure)
+      const typeArgs = extractTypeArguments(object.type);
+      invariant(
+        typeArgs && typeArgs.length >= 2,
+        `Invalid pool data structure: Unable to extract coin types from either fields or type parameters for pool ${object.objectId}. Type: ${object.type}`
+      );
+      coinTypeA = typeArgs[0];
+      coinTypeB = typeArgs[1];
+    }
 
     const tokens = await Promise.all([
-      getToken(`0x${rawData.coin_type_a.fields.name}`),
-      getToken(`0x${rawData.coin_type_b.fields.name}`),
+      getToken(coinTypeA),
+      getToken(coinTypeB),
     ]);
 
     const pool = new Pool({

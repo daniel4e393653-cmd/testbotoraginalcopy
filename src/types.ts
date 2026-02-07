@@ -66,8 +66,8 @@ export type FlowXV3PositionRawData = {
 
 export type CetusPoolRawData = {
   id: ID;
-  coin_type_a: MoveObject<MoveTypeName>;
-  coin_type_b: MoveObject<MoveTypeName>;
+  coin_type_a?: MoveObject<MoveTypeName>;
+  coin_type_b?: MoveObject<MoveTypeName>;
   liquidity: string;
   coin_a: string;
   coin_b: string;
