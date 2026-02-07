@@ -83,7 +83,11 @@ export class FlowXV3PositionProvider implements IPositionProvider {
   }
 
   private async _fromObjectData(object: SuiObjectData) {
-    const rawData = object.content["fields"] as FlowXV3PositionRawData;
+    invariant(
+      object.content && object.content.dataType === "moveObject",
+      "object content must be a move object"
+    );
+    const rawData = object.content.fields as unknown as FlowXV3PositionRawData;
 
     const pool = await new FlowXV3PoolProvider().getPoolById(rawData.pool_id);
 

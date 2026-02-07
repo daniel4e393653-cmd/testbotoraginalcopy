@@ -29,7 +29,11 @@ export class CetusPoolProvider implements IPoolProvder {
   }
 
   private async _fromObjectData(object: SuiObjectData): Promise<Pool> {
-    const rawData = object.content["fields"] as CetusPoolRawData;
+    invariant(
+      object.content && object.content.dataType === "moveObject",
+      "object content must be a move object"
+    );
+    const rawData = object.content.fields as unknown as CetusPoolRawData;
 
     const tokens = await Promise.all([
       getToken(`0x${rawData.coin_type_a.fields.name}`),

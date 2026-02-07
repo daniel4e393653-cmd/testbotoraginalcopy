@@ -29,7 +29,11 @@ export class FlowXV3PoolProvider implements IPoolProvder {
   }
 
   private async _fromObjectData(object: SuiObjectData): Promise<Pool> {
-    const rawData = object.content["fields"] as FlowXV3PoolRawData;
+    invariant(
+      object.content && object.content.dataType === "moveObject",
+      "object content must be a move object"
+    );
+    const rawData = object.content.fields as unknown as FlowXV3PoolRawData;
 
     const tokens = await Promise.all([
       getToken(`0x${rawData.coin_type_x.fields.name}`),
