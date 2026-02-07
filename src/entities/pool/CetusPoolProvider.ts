@@ -5,9 +5,10 @@ import { SuiObjectData } from "@mysten/sui/client";
 import { Pool } from "./Pool";
 import { jsonRpcProvider } from "../../utils/jsonRpcProvider";
 import { getToken } from "../../utils/tokenHelper";
-import { MAPPING_POOL_OBJECT_TYPE, TICK_INDEX_BITS } from "../../constants";
+import { MAPPING_POOL_OBJECT_TYPE } from "../../constants";
 import { CetusPoolRawData } from "../../types";
 import { IPoolProvder } from "./IPoolProvder";
+import { extractTickIndex } from "../../utils/cetusHelper";
 
 export class CetusPoolProvider implements IPoolProvder {
   public async getPoolById(poolId: string): Promise<Pool> {
@@ -69,16 +70,7 @@ export class CetusPoolProvider implements IPoolProvder {
       reserves: [rawData.coin_a, rawData.coin_b],
       fee: Number(rawData.fee_rate),
       sqrtPriceX64: rawData.current_sqrt_price,
-      tickCurrent: (() => {
-        if (rawData.current_tick_index?.fields?.bits !== undefined) {
-          return Number(BigInt.asIntN(TICK_INDEX_BITS, BigInt(rawData.current_tick_index.fields.bits)));
-        }
-        // Fallback for direct tick index value (if structure differs)
-        if (typeof rawData.current_tick_index === 'number' || typeof rawData.current_tick_index === 'string') {
-          return Number(BigInt.asIntN(TICK_INDEX_BITS, BigInt(rawData.current_tick_index)));
-        }
-        invariant(false, `Invalid current_tick_index structure for pool ${object.objectId}`);
-      })(),
+      tickCurrent: extractTickIndex(rawData.current_tick_index, object.objectId, "current_tick_index"),
       liquidity: rawData.liquidity,
       feeGrowthGlobalX: rawData.fee_growth_global_a,
       feeGrowthGlobalY: rawData.fee_growth_global_b,
