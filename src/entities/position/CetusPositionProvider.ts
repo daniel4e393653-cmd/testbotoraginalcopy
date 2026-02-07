@@ -68,10 +68,9 @@ export class CetusPositionProvider implements IPositionProvider {
           }
         } catch (err) {
           logger.error(
-            `Failed to parse position object ${object.data.objectId}`,
+            `Failed to parse position object ${object.data.objectId}, skipping`,
             err
           );
-          throw err;
         }
       }
     } while (hasNextPage);
