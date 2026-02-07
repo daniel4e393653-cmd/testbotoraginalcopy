@@ -5,12 +5,13 @@ import { normalizeSuiObjectId } from "@mysten/sui/utils";
 import { Protocol } from "@flowx-finance/sdk";
 
 import { jsonRpcProvider } from "../../utils/jsonRpcProvider";
-import { MAPPING_POSITION_OBJECT_TYPE, TICK_INDEX_BITS } from "../../constants";
+import { MAPPING_POSITION_OBJECT_TYPE } from "../../constants";
 import { CetusPoolProvider } from "../pool";
 import { CetusPositionRawData } from "../../types";
 import { getLogger } from "../../utils/Logger";
 import { IPositionProvider } from "./IPositionProvider";
 import { Position } from "./Position";
+import { extractTickIndex } from "../../utils/cetusHelper";
 
 const logger = getLogger(module);
 
@@ -96,18 +97,8 @@ export class CetusPositionProvider implements IPositionProvider {
       liquidity: rawData.liquidity,
       owner: object.owner["AddressOwner"] ?? "",
       pool,
-      tickLower: Number(
-        BigInt.asIntN(
-          TICK_INDEX_BITS,
-          BigInt(rawData.tick_lower_index.fields.bits)
-        )
-      ),
-      tickUpper: Number(
-        BigInt.asIntN(
-          TICK_INDEX_BITS,
-          BigInt(rawData.tick_upper_index.fields.bits)
-        )
-      ),
+      tickLower: extractTickIndex(rawData.tick_lower_index, object.objectId, "tick_lower_index"),
+      tickUpper: extractTickIndex(rawData.tick_upper_index, object.objectId, "tick_upper_index"),
       feeGrowthInsideXLast: rawData.fee_growth_inside_a,
       feeGrowthInsideYLast: rawData.fee_growth_inside_b,
       coinsOwedX: rawData.fee_owed_a,
