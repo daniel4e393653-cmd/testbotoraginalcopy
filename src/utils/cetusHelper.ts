@@ -20,7 +20,7 @@ export function extractTickIndex(
     tickIndex &&
     typeof tickIndex === "object" &&
     "fields" in tickIndex &&
-    tickIndex.fields?.bits !== undefined
+    tickIndex.fields?.bits != null
   ) {
     return Number(BigInt.asIntN(TICK_INDEX_BITS, BigInt(tickIndex.fields.bits)));
   }

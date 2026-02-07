@@ -53,10 +53,13 @@ export class CetusPoolProvider implements IPoolProvder {
     const pool = new Pool({
       objectId: object.objectId,
       coins: tokens,
-      poolRewards: rawData.reward_infos.map((rewardInfo) => {
+      poolRewards: rawData.reward_infos.map((rewardInfo, index) => {
         invariant(
-          rewardInfo.fields && rewardInfo.fields.reward_coin_type && rewardInfo.fields.reward_coin_type.fields,
-          `Invalid reward info structure for pool ${object.objectId}`
+          rewardInfo.fields && 
+          rewardInfo.fields.reward_coin_type && 
+          rewardInfo.fields.reward_coin_type.fields &&
+          rewardInfo.fields.reward_coin_type.fields.name,
+          `Invalid reward info structure at index ${index} for pool ${object.objectId}`
         );
         return {
           coin: new Coin(`0x${rewardInfo.fields.reward_coin_type.fields.name}`),
