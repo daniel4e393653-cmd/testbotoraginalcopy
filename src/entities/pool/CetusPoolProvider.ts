@@ -42,7 +42,12 @@ export class CetusPoolProvider implements IPoolProvder {
     let coinTypeB: string;
 
     // Try to get coin types from fields first (old structure)
-    if (rawData.coin_type_a && rawData.coin_type_a.fields && rawData.coin_type_a.fields.name) {
+    if (rawData.coin_type_a && 
+        rawData.coin_type_a.fields && 
+        rawData.coin_type_a.fields.name &&
+        rawData.coin_type_b && 
+        rawData.coin_type_b.fields && 
+        rawData.coin_type_b.fields.name) {
       coinTypeA = `0x${rawData.coin_type_a.fields.name}`;
       coinTypeB = `0x${rawData.coin_type_b.fields.name}`;
     } else {

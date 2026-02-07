@@ -69,5 +69,15 @@ describe('typeHelper', () => {
       expect(result![0]).toBe('0x2::sui::SUI');
       expect(result![1]).toBe('0x5d4b302506645c37ff133b98c4b50a5ae14841659738d6d733d59d0d217a93bf::coin::COIN');
     });
+
+    it('should handle deeply nested generics at the end', () => {
+      const typeStr = '0x123::outer::Outer<0x456::a::A, 0x789::inner::Inner<0xabc::nested::Nested<0xdef::deep::Deep>>>';
+      const result = extractTypeArguments(typeStr);
+      
+      expect(result).not.toBeNull();
+      expect(result).toHaveLength(2);
+      expect(result![0]).toBe('0x456::a::A');
+      expect(result![1]).toBe('0x789::inner::Inner<0xabc::nested::Nested<0xdef::deep::Deep>>');
+    });
   });
 });
