@@ -105,7 +105,13 @@ export class CetusPositionProvider implements IPositionProvider {
 
     // Safety check: ensure tickLower < tickUpper after alignment and clamping
     if (tickLower >= tickUpper) {
-      tickUpper = tickLower + pool.tickSpacing;
+      const alignedMax = Math.floor(ClmmTickMath.MAX_TICK / pool.tickSpacing) * pool.tickSpacing;
+      if (tickLower + pool.tickSpacing <= alignedMax) {
+        tickUpper = tickLower + pool.tickSpacing;
+      } else {
+        tickUpper = alignedMax;
+        tickLower = alignedMax - pool.tickSpacing;
+      }
     }
 
     const position = new Position({
