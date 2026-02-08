@@ -1,11 +1,11 @@
 import invariant from "tiny-invariant";
-import { Coin, Protocol } from "@flowx-finance/sdk";
+import { Coin } from "../../utils/Coin";
+import { Protocol, MAPPING_POOL_OBJECT_TYPE } from "../../constants";
 import { SuiObjectData } from "@mysten/sui/client";
 
 import { Pool } from "./Pool";
 import { jsonRpcProvider } from "../../utils/jsonRpcProvider";
 import { getToken } from "../../utils/tokenHelper";
-import { MAPPING_POOL_OBJECT_TYPE } from "../../constants";
 import { CetusPoolRawData } from "../../types";
 import { IPoolProvder } from "./IPoolProvder";
 import { extractTickIndex } from "../../utils/cetusHelper";
@@ -90,6 +90,7 @@ export class CetusPoolProvider implements IPoolProvder {
       fee: Number(rawData.fee_rate),
       sqrtPriceX64: rawData.current_sqrt_price,
       tickCurrent: extractTickIndex(rawData.current_tick_index, object.objectId, "current_tick_index"),
+      tickSpacing: rawData.tick_spacing,
       liquidity: rawData.liquidity,
       feeGrowthGlobalX: rawData.fee_growth_global_a,
       feeGrowthGlobalY: rawData.fee_growth_global_b,

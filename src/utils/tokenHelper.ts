@@ -4,15 +4,15 @@ import {
   TransactionArgument,
   TransactionResult,
 } from "@mysten/sui/transactions";
-import { Coin as Token } from "@flowx-finance/sdk";
+import { Coin } from "./Coin";
 
-import { BigintIsh, FLOWX_AG_UNIVERSAL_ROUTER_PACKAGE_ID } from "../constants";
+import { BigintIsh } from "../constants";
 import { cache } from "./cache";
 import { jsonRpcProvider } from "./jsonRpcProvider";
 import { CACHE_CONFIG } from "../config/cache";
 
-export const getToken = async (tokenId: string): Promise<Token> => {
-  const cached = cache.get<Token>(tokenId);
+export const getToken = async (tokenId: string): Promise<Coin> => {
+  const cached = cache.get<Coin>(tokenId);
   if (!!cached) {
     return cached;
   }
@@ -21,7 +21,7 @@ export const getToken = async (tokenId: string): Promise<Token> => {
     coinType: tokenId,
   });
 
-  const token = new Token(
+  const token = new Coin(
     tokenId,
     metadata.decimals,
     metadata.symbol,
@@ -51,10 +51,6 @@ export const refundTokensIfNecessary =
   ) =>
   (tx: Transaction) => {
     token.forEach((coin) => {
-      tx.moveCall({
-        target: `${FLOWX_AG_UNIVERSAL_ROUTER_PACKAGE_ID}::utils::refund_if_necessary`,
-        typeArguments: [coin.coinType],
-        arguments: [coin.objectCoin, tx.pure.address(receiver)],
-      });
+      tx.transferObjects([coin.objectCoin as any], receiver);
     });
   };

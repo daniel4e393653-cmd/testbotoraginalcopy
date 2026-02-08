@@ -3,7 +3,6 @@ import invariant from "tiny-invariant";
 
 import { PriceProvider } from "./PriceProvider";
 import { PythPriceProvider } from "./PythPriceProvider";
-import { FlowXPriceProvider } from "./FlowXPriceProvider";
 import { CetusPriceProvider } from "./CetusPriceProvider";
 import { CacheablePriceProvider } from "./CacheablePriceProvider";
 import { cache } from "../../utils/cache";
@@ -28,19 +27,11 @@ export class AggregatorPriceProvider implements PriceProvider {
       },
       {
         provider: new CacheablePriceProvider(
-          new FlowXPriceProvider(),
-          CACHE_CONFIG.FLOWX_PRICE_TTL,
-          "prices:flowx"
-        ),
-        weight: 2,
-      },
-      {
-        provider: new CacheablePriceProvider(
           new CetusPriceProvider(),
           CACHE_CONFIG.CETUS_PRICE_TTL,
           "prices:cetus"
         ),
-        weight: 2,
+        weight: 4,
       },
     ];
   }

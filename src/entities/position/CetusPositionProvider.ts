@@ -2,10 +2,10 @@ import invariant from "tiny-invariant";
 import BN from "bn.js";
 import { SuiObjectData } from "@mysten/sui/client";
 import { normalizeSuiObjectId } from "@mysten/sui/utils";
-import { Protocol, ClmmTickMath } from "@flowx-finance/sdk";
+import { Protocol, MAPPING_POSITION_OBJECT_TYPE } from "../../constants";
+import { MIN_TICK, MAX_TICK } from "../../utils/clmmMath";
 
 import { jsonRpcProvider } from "../../utils/jsonRpcProvider";
-import { MAPPING_POSITION_OBJECT_TYPE } from "../../constants";
 import { CetusPoolProvider } from "../pool";
 import { CetusPositionRawData } from "../../types";
 import { getLogger } from "../../utils/Logger";
@@ -100,12 +100,12 @@ export class CetusPositionProvider implements IPositionProvider {
     let tickUpper = alignTickToSpacing(tickUpperRaw, pool.tickSpacing, true);
 
     // Clamp ticks to valid MIN_TICK/MAX_TICK range
-    tickLower = clampTickToRange(tickLower, pool.tickSpacing, ClmmTickMath.MIN_TICK, ClmmTickMath.MAX_TICK);
-    tickUpper = clampTickToRange(tickUpper, pool.tickSpacing, ClmmTickMath.MIN_TICK, ClmmTickMath.MAX_TICK);
+    tickLower = clampTickToRange(tickLower, pool.tickSpacing, MIN_TICK, MAX_TICK);
+    tickUpper = clampTickToRange(tickUpper, pool.tickSpacing, MIN_TICK, MAX_TICK);
 
     // Safety check: ensure tickLower < tickUpper after alignment and clamping
     if (tickLower >= tickUpper) {
-      const alignedMax = Math.floor(ClmmTickMath.MAX_TICK / pool.tickSpacing) * pool.tickSpacing;
+      const alignedMax = Math.floor(MAX_TICK / pool.tickSpacing) * pool.tickSpacing;
       if (tickLower + pool.tickSpacing <= alignedMax) {
         tickUpper = tickLower + pool.tickSpacing;
       } else {

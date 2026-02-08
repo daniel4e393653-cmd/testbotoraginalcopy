@@ -1,6 +1,8 @@
-import { ClmmPool, Coin, Percent } from "@flowx-finance/sdk";
 import { TransactionArgument } from "@mysten/sui/transactions";
 import { BigintIsh, ClmmProtocol } from "./constants";
+import { Percent } from "./utils/Percent";
+import { Coin } from "./utils/Coin";
+import { Pool } from "./entities/pool/Pool";
 
 export type MoveObject<T> = {
   fields: T;

@@ -1,6 +1,6 @@
 import BN from "bn.js";
 
-import { ClmmTickMath } from "@flowx-finance/sdk";
+import { tickIndexToSqrtPriceX64 } from "./clmmMath";
 import { closestActiveRange } from "./poolHelper";
 
 describe("#poolHelper", () => {
@@ -18,7 +18,7 @@ describe("#poolHelper", () => {
     it("should return a range centered around tickCurrent when sqrtPrice equals converted price", () => {
       const pool: any = setupPool(
         3000,
-        ClmmTickMath.tickIndexToSqrtPriceX64(3000)
+        tickIndexToSqrtPriceX64(3000)
       );
 
       const range = closestActiveRange(pool);
@@ -28,7 +28,7 @@ describe("#poolHelper", () => {
     it("should adjust lowerTick down if sqrtPrice < converted price and lowerTick === tickCurrent", () => {
       const pool: any = setupPool(
         3000,
-        ClmmTickMath.tickIndexToSqrtPriceX64(3000).sub(new BN(1))
+        tickIndexToSqrtPriceX64(3000).sub(new BN(1))
       );
 
       const range = closestActiveRange(pool);
@@ -38,7 +38,7 @@ describe("#poolHelper", () => {
     it("should not adjust lowerTick down if sqrtPrice < converted price but lowerTick !== tickCurrent", () => {
       const pool: any = setupPool(
         3010,
-        ClmmTickMath.tickIndexToSqrtPriceX64(3010).sub(new BN(1))
+        tickIndexToSqrtPriceX64(3010).sub(new BN(1))
       );
 
       const range = closestActiveRange(pool);
@@ -48,7 +48,7 @@ describe("#poolHelper", () => {
     it("should work with multiplier = 2", () => {
       const pool: any = setupPool(
         3000,
-        ClmmTickMath.tickIndexToSqrtPriceX64(3000)
+        tickIndexToSqrtPriceX64(3000)
       );
 
       const range = closestActiveRange(pool, 2);
@@ -58,7 +58,7 @@ describe("#poolHelper", () => {
     it("should round candidateTickLower to nearest multiple of tickSpacing", () => {
       const pool: any = setupPool(
         3025,
-        ClmmTickMath.tickIndexToSqrtPriceX64(3025)
+        tickIndexToSqrtPriceX64(3025)
       ); // halfRange = 30, candidate = 2995 → rounds to 3000
 
       const range = closestActiveRange(pool);
@@ -68,7 +68,7 @@ describe("#poolHelper", () => {
     it("should return correct range when tickCurrent is negative and divisible by tickSpacing", () => {
       const pool: any = setupPool(
         -360,
-        ClmmTickMath.tickIndexToSqrtPriceX64(-360)
+        tickIndexToSqrtPriceX64(-360)
       );
 
       // halfRange = 30, candidateTickLower = round((-390 / 60)) * 60 = -360
@@ -79,7 +79,7 @@ describe("#poolHelper", () => {
     it("should return correct range when tickCurrent is negative and NOT divisible by tickSpacing", () => {
       const pool: any = setupPool(
         -345,
-        ClmmTickMath.tickIndexToSqrtPriceX64(-345)
+        tickIndexToSqrtPriceX64(-345)
       );
 
       // halfRange = 30, candidateTickLower = round(-375 / 60) * 60 = -360
@@ -90,7 +90,7 @@ describe("#poolHelper", () => {
     it("should adjust lowerTick down when tickCurrent is negative and equals lowerTick and sqrtPrice < converted", () => {
       const pool: any = setupPool(
         -360,
-        ClmmTickMath.tickIndexToSqrtPriceX64(-360)
+        tickIndexToSqrtPriceX64(-360)
       );
 
       // candidateTickLower = -360, matches tickCurrent → adjust down by tickSpacing
@@ -99,7 +99,7 @@ describe("#poolHelper", () => {
     });
 
     it("should return correct range when tickCurrent is small negative (e.g. -1)", () => {
-      const pool: any = setupPool(-1, ClmmTickMath.tickIndexToSqrtPriceX64(-1));
+      const pool: any = setupPool(-1, tickIndexToSqrtPriceX64(-1));
 
       // halfRange = 30, candidate = round(-31 / 60) = -1 → * 60 = -60
       const range = closestActiveRange(pool);
@@ -109,7 +109,7 @@ describe("#poolHelper", () => {
     it("should return wider range with multiplier = 2 and negative tickCurrent", () => {
       const pool: any = setupPool(
         -300,
-        ClmmTickMath.tickIndexToSqrtPriceX64(-300)
+        tickIndexToSqrtPriceX64(-300)
       );
 
       // multiplier = 2 → halfRange = 60, candidate = round(-360 / 60) = -6 → * 60 = -360
@@ -127,7 +127,7 @@ describe("#poolHelper", () => {
         it(description, () => {
           const pool: any = setupPool(
             tickCurrent,
-            ClmmTickMath.tickIndexToSqrtPriceX64(tickCurrent)
+            tickIndexToSqrtPriceX64(tickCurrent)
           ); // tickSpacing = 60
 
           const range = closestActiveRange(pool, multiplier);

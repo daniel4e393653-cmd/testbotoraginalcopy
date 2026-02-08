@@ -1,10 +1,12 @@
 import BN from "bn.js";
 import BigNumber from "bignumber.js";
-import { BigintIsh, BPS, Fraction, ONE, Percent } from "@flowx-finance/sdk";
 
+import { BigintIsh } from "../constants";
+import { Fraction } from "./Fraction";
 import { Pool, PriceProvider } from "../entities";
 
 const FLOAT_SCALING = 1_000_000_000;
+const BPS = 1_000_000;
 
 
 export class ZapCalculator {
@@ -45,15 +47,13 @@ export class ZapCalculator {
       );
 
     if (!isCoinX) {
-      ratio = new Fraction(ONE).divide(ratio);
+      ratio = new Fraction(1).divide(ratio);
     }
 
-    const fraction = ratio
-      .multiply(new Percent(1).subtract(new Percent(pool.fee.toString(), BPS)))
-      .add(ONE.toString());
+    const feeMultiplier = new Fraction(BPS - pool.fee, BPS);
+    const fraction = ratio.multiply(feeMultiplier).add(1);
     return new BN(amount).sub(
       new BN(new Fraction(amount).divide(fraction).toFixed(0))
     );
   }
 }
-
