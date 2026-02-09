@@ -178,7 +178,6 @@ export class CetusPositionManager implements PositionManager {
           tx.pure.u128(position.liquidity.toString()),
           tx.pure.u64(amountXMin),
           tx.pure.u64(amountYMin),
-          tx.pure.u64(options.deadline),
           tx.object(SUI_CLOCK_OBJECT_ID),
         ],
       });
