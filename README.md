@@ -4,13 +4,14 @@ Automated rebalancing bot for Concentrated Liquidity Market Maker (CLMM) positio
 
 ## Features
 
-- **Multi-Protocol Support**: Works with FlowX V3, Cetus, Turbos Finance, Bluefin, and Magma Finance
+- **Multi-Protocol Support**: ✅ Works with **Cetus** and **FlowX V3** (Turbos Finance, Bluefin, and Magma Finance coming soon)
 - **Automated Rebalancing**: Continuously monitors positions and rebalances when price moves outside target ranges
 - **Reward Compounding**: Automatically compounds rewards based on configurable thresholds and schedules
 - **Price Impact Protection**: Configurable price impact thresholds to prevent unfavorable trades
 - **Flexible Configuration**: Environment-based configuration for different trading strategies
 - **Built-in Logging**: Comprehensive logging system for monitoring bot activities
 - **Caching**: Intelligent caching mechanisms for better performance
+- **Protocol-Agnostic Architecture**: Same core logic works for all supported protocols
 
 ## Architecture
 
@@ -228,11 +229,23 @@ The bot can automatically compound rewards based on:
 
 ## Supported Protocols
 
-- **FlowX V3**: Next-generation AMM with concentrated liquidity
+### Currently Supported ✅
 - **Cetus**: Leading DEX on Sui with advanced trading features
+- **FlowX V3**: Next-generation AMM with concentrated liquidity
+
+### Coming Soon 🚧
 - **Turbos Finance**: High-performance DeFi protocol
 - **Bluefin**: Derivatives and spot trading platform
 - **Magma Finance**: Innovative liquidity solutions
+
+### Protocol Architecture
+
+The bot uses a **protocol-agnostic architecture** where the same core rebalancing and compounding logic works for all protocols. Each protocol implements the same interfaces:
+- `IPoolProvider`: Fetches pool data
+- `IPositionProvider`: Fetches position data  
+- `PositionManager`: Executes transactions
+
+See [PROTOCOL_VERIFICATION.md](./PROTOCOL_VERIFICATION.md) for detailed information on how the same logic works for both Cetus and FlowX.
 
 ## Monitoring and Logging
 
