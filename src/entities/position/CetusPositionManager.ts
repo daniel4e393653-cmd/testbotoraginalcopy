@@ -166,7 +166,7 @@ export class CetusPositionManager implements PositionManager {
 
       const { packageId, globalConfigId } = CETUS_CONFIG;
       tx.moveCall({
-        target: `${packageId}::pool::remove_liquidity_with_slippage`,
+        target: `${packageId}::pool::remove_liquidity`,
         typeArguments: [
           position.amountX.coin.coinType,
           position.amountY.coin.coinType,
