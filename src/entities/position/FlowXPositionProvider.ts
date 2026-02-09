@@ -117,7 +117,9 @@ export class FlowXPositionProvider implements IPositionProvider {
     const position = new Position({
       objectId: object.objectId,
       liquidity: rawData.liquidity,
-      owner: object.owner["AddressOwner"] ?? "",
+      owner: (object.owner && typeof object.owner === "object" && "AddressOwner" in object.owner) 
+        ? (object.owner as any)["AddressOwner"] 
+        : "",
       pool,
       tickLower,
       tickUpper,

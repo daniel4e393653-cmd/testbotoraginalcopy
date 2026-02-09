@@ -249,8 +249,10 @@ export class FlowXPositionManager implements PositionManager {
   private _tickToI32(tick: number, tx: Transaction): TransactionResult {
     const { packageId } = FLOWX_V3_CONFIG;
     
-    // Convert negative ticks to unsigned 32-bit representation
-    const tickBits = tick >= 0 ? tick : (1 << 32) + tick;
+    // Convert negative ticks to unsigned 32-bit representation using two's complement
+    // For negative values: add 2^32 to get the unsigned representation
+    const I32_MAX_UNSIGNED = 1 << 32;
+    const tickBits = tick >= 0 ? tick : I32_MAX_UNSIGNED + tick;
     
     // Call the i32::from function to create an i32 value
     return tx.moveCall({

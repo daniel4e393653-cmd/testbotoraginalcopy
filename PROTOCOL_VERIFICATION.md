@@ -105,6 +105,10 @@ PROTOCOL=FLOWX_V3
 TARGET_POOL=0x88cec280ed5406af7951ef768b305de5323b843cc127bcab988d08770d00a5f7
 ```
 
+**Note**: To find valid pool addresses:
+- **Cetus**: Visit https://app.cetus.zone/pools or use the Cetus API
+- **FlowX**: Visit https://app.flowx.finance/pools or use the FlowX GraphQL API
+
 ## Verification Summary
 
 ✅ **Same Core Logic**: The Worker class uses the same rebalancing and compounding logic for both protocols

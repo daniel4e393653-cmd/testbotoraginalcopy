@@ -22,6 +22,9 @@ export function extractTickIndex(
     "fields" in tickIndex &&
     tickIndex.fields?.bits != null
   ) {
+    // Convert to signed 32-bit integer, then to Number
+    // Note: This assumes tick values are within JavaScript's safe integer range (-2^31 to 2^31-1)
+    // which is valid for CLMM ticks (typically ranging from -887272 to 887272)
     return Number(BigInt.asIntN(TICK_INDEX_BITS, BigInt(tickIndex.fields.bits)));
   }
 
