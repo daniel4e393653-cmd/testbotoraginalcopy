@@ -4,9 +4,10 @@ export type BigintIsh = BN | string | number;
 
 export enum Protocol {
   CETUS = "CETUS",
+  FLOWX_V3 = "FLOWX_V3",
 }
 
-export type ClmmProtocol = Protocol.CETUS;
+export type ClmmProtocol = Protocol.CETUS | Protocol.FLOWX_V3;
 
 export enum Rounding {
   ROUND_DOWN,
@@ -33,12 +34,25 @@ export const CETUS_CONFIG = {
     "0x89c1a321291d15ddae5a086c9abc533dff697fde3d89e0ca836c41af73e36a75",
 };
 
+export const FLOWX_V3_CONFIG = {
+  packageId:
+    "0xde2c47eb0da8c74e4d0f6a220c41619681221b9c2590518095f0f0c2d3f3c772",
+  poolRegistryObject:
+    "0x27565d24a4cd51127ac90e4074a841bbe356cca7bf5759ddc14a975be1632abc",
+  positionRegistryObject:
+    "0x7dffe3229d675645564273aa68c67406b6a80aa29e245ac78283acd7ed5e4912",
+  versionObject:
+    "0x67624a1533b5aff5d0dfcf5e598684350efd38134d2d245f475524c03a64e656",
+};
+
 export const MAPPING_POSITION_OBJECT_TYPE: Record<
   ClmmProtocol,
   string | undefined
 > = {
   [Protocol.CETUS]:
     "0x1eabed72c53feb3805120a081dc15963c204dc8d091542592abaf7a35689b2fb::position::Position",
+  [Protocol.FLOWX_V3]:
+    "0x25929e7f29e0a30eb4e692952ba1b5b65a3a4d65ab5f2a32e1ba3edcb587f26d::position::Position",
 };
 
 export const MAPPING_POOL_OBJECT_TYPE: Record<
@@ -47,6 +61,8 @@ export const MAPPING_POOL_OBJECT_TYPE: Record<
 > = {
   [Protocol.CETUS]:
     "0x1eabed72c53feb3805120a081dc15963c204dc8d091542592abaf7a35689b2fb::pool::Pool",
+  [Protocol.FLOWX_V3]:
+    "0x25929e7f29e0a30eb4e692952ba1b5b65a3a4d65ab5f2a32e1ba3edcb587f26d::pool::Pool",
 };
 
 export const BPS = 1_000_000;
