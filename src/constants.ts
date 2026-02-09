@@ -38,11 +38,11 @@ export const FLOWX_V3_CONFIG = {
   packageId:
     "0xde2c47eb0da8c74e4d0f6a220c41619681221b9c2590518095f0f0c2d3f3c772",
   poolRegistryObject:
-    "0x3d4a3ec73c767afa9ab78ef42e3ff1f43628e91dcafc55e3e0a7f3bc677d3bba",
+    "0x27565d24a4cd51127ac90e4074a841bbe356cca7bf5759ddc14a975be1632abc",
   positionRegistryObject:
-    "0xd75bf2ab4c0ae3e3e45e0e3e64d5bd6a36b5835ae84a10e5e3bb9d50e8ef7a4d",
+    "0x7dffe3229d675645564273aa68c67406b6a80aa29e245ac78283acd7ed5e4912",
   versionObject:
-    "0xf7b8c3e41cde89b0f5c6e5e2e3e0e1e2e3e4e5e6e7e8e9e0e1e2e3e4e5e6e7e8",
+    "0x67624a1533b5aff5d0dfcf5e598684350efd38134d2d245f475524c03a64e656",
 };
 
 export const MAPPING_POSITION_OBJECT_TYPE: Record<

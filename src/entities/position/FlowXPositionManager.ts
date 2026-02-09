@@ -31,8 +31,8 @@ export class FlowXPositionManager implements PositionManager {
     const { packageId, versionObject } = FLOWX_V3_CONFIG;
 
     // Convert ticks to i32 format for FlowX
-    const tickLowerI32 = this._tickToI32(position.tickLower);
-    const tickUpperI32 = this._tickToI32(position.tickUpper);
+    const tickLowerI32 = this._tickToI32(position.tickLower, tx);
+    const tickUpperI32 = this._tickToI32(position.tickUpper, tx);
 
     return tx.moveCall({
       target: `${packageId}::position_manager::open_position`,
@@ -243,15 +243,19 @@ export class FlowXPositionManager implements PositionManager {
 
   /**
    * Convert a tick number to i32 format for FlowX protocol
-   * FlowX uses i32 representation for ticks
+   * FlowX uses i32 representation for ticks, which needs to be created
+   * via the FlowX i32 module
    */
-  private _tickToI32(tick: number): TransactionArgument {
-    // For FlowX, we need to create an i32 object
-    // This is a simplified version - actual implementation may need to call i32::from
-    return {
-      kind: "Input",
-      value: tick,
-      type: "pure",
-    } as any;
+  private _tickToI32(tick: number, tx: Transaction): TransactionResult {
+    const { packageId } = FLOWX_V3_CONFIG;
+    
+    // Convert negative ticks to unsigned 32-bit representation
+    const tickBits = tick >= 0 ? tick : (1 << 32) + tick;
+    
+    // Call the i32::from function to create an i32 value
+    return tx.moveCall({
+      target: `${packageId}::i32::from`,
+      arguments: [tx.pure.u32(tickBits)],
+    });
   }
 }
