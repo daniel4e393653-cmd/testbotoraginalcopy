@@ -178,6 +178,7 @@ export class CetusPositionManager implements PositionManager {
           tx.pure.u128(position.liquidity.toString()),
           tx.pure.u64(amountXMin),
           tx.pure.u64(amountYMin),
+          tx.pure.bool(true), // fix_amount_a - specifies which amount to fix during liquidity removal
           tx.object(SUI_CLOCK_OBJECT_ID),
         ],
       });
