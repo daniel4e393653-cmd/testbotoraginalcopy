@@ -172,6 +172,7 @@ export class CetusPositionManager implements PositionManager {
           position.amountY.coin.coinType,
         ],
         arguments: [
+          tx.object(globalConfigId),
           tx.object(position.pool.id),
           tx.object(position.id),
           tx.pure.u128(position.liquidity.toString()),
